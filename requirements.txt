@@ -1,0 +1,9 @@
+flask==2.0.1
+flask-cors==3.0.10
+flask-jwt-extended==4.2.3
+python-dotenv==0.19.1
+Werkzeug==2.0.1
+requests==2.26.0
+supabase==1.0.3
+python-jose==3.3.0
+pyjwt==2.6.0

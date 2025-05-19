@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport" />
+    <title>Profile - Predict</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        accent: '#d6f94a',
+                        'accent-dark': '#b7f34d',
+                        'accent-light': '#d9ff66',
+                        purple: '#6b21a8',
+                        blue: '#4a2f46',
+                        pink: '#a60063',
+                        'tg-bg': '#17212b',
+                        'tg-secondary-bg': '#232e3c',
+                        'tg-text': '#f5f5f5',
+                        'tg-hint': '#708499',
+                        'tg-link': '#6ab3f3',
+                        'tg-button': '#5288c1',
+                        'tg-destructive': '#ec3942'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="font-['Inter',sans-serif] m-0 p-0 text-white bg-gradient-to-b from-[#300c2b] to-black min-h-screen">
+    <div class="relative mb-4"> <img src="Predictmelogo.svg" alt="Predictme Logo" class="h-12"
+            style="padding-top: 20px; margin: auto; "></div>
+    <div class="content-wrapper">
+        <div class="container max-w-md w-full mx-auto px-4 pt-4">
+            <div class="flex items-center justify-between" style="padding-bottom: 20px;">
+                <div class="flex items-center space-x-2">
+                    <div class="flex items-center bg-white/15 rounded-lg px-3 py-2"> <img
+                            src="https://res.cloudinary.com/dnbaxs5fd/image/upload/v1746013366/download_gg9ri3.png"
+                            alt="Predict token" class="w-6 h-6 mr-2"> <span id="tokenBalance" class="text-lg font-bold">0</span>
+                    </div>
+                </div>
+
+                <button id="notificationsBtn" class="relative p-2"> <i
+                        class="fas fa-bell text-gray-400 hover:text-accent transition-colors"></i>
+                    <span id="notificationCount"
+                        class="absolute top-0 right-0 bg-accent text-black text-[10px] rounded-full w-4 h-4 flex items-center justify-center">0</span>
+                </button>
+                <button id="connectWalletBtn" class="ml-4 bg-accent text-black font-semibold px-4 py-2 rounded-lg hover:bg-accent-dark transition-colors">Connect Wallet</button>
+                <span id="walletAddress" class="ml-2 text-xs text-accent-light"></span>
+            </div>
+            <div class="card bg-white/15 rounded-lg overflow-hidden mb-4 p-0">
+                <div class="relative h-24 bg-gradient-to-r from-pink to-blue">
+                    <button id="editProfileBtn"
+                        class="absolute top-2 right-2 bg-black/30 text-white p-1.5 rounded-full hover:bg-black/50 transition-colors"><i
+                            class="fas fa-pencil-alt text-xs"></i> </button>
+                </div>
+
+                <div class="px-4 pb-4 relative">
+                    <div class="absolute -top-10 left-4 border-4 border-black/30 rounded-full bg-black/20">
+                        <img id="userAvatar" src="https://placehold.co/80x80/d6f94a/000000?text=User" alt="User avatar"
+                            class="w-20 h-20 rounded-full object-cover">
+                    </div>
+
+                    <div class="pt-12 flex flex-col">
+                        <div id="username" class="text-lg font-bold mb-1">@User</div>
+                        <div id="userWallet" class="text-sm text-gray-400 mb-4">Connect your wallet</div>
+                        <div class="flex space-x-2"> 
+                            <a href="friends.html" class="flex-1 btn btn-secondary"> 
+                                <i class="fas fa-users mr-2"></i> 
+                                <span>Friends</span>
+                            </a>
+                            <a href="settings.html" class="flex-1 btn btn-secondary"> 
+                                <i class="fas fa-cog mr-2"></i>
+                                <span>Settings</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-white/15 rounded-lg p-4 mb-4">
+                <h3 class="text-lg font-bold mb-4">My stats</h3>
+                <div id="statsContainer" class="grid grid-cols-3 gap-2">
+                    <div class="bg-black\20 rounded-lg p-3 text-center">
+                        <div class="flex justify-center items-center mb-1"> <i
+                                class="fas fa-chart-line text-accent mr-1"></i> <span class="text-lg font-bold">0</span>
+                        </div>
+                        <div class="text-xs text-gray-400">Predictions</div>
+                    </div>
+
+                    <div class="bg-black\20 rounded-lg p-3 text-center">
+                        <div class="flex justify-center items-center mb-1"> <i
+                                class="fas fa-check-circle text-accent mr-1"></i> <span
+                                class="text-lg font-bold">0</span> </div>
+                        <div class="text-xs text-gray-400">Completed</div>
+                    </div>
+
+                    <div class="bg-black\20 rounded-lg p-3 text-center">
+                        <div class="flex justify-center items-center mb-1"> <i
+                                class="fas fa-trophy text-accent mr-1"></i> <span class="text-lg font-bold">0</span>
+                        </div>
+                        <div class="text-xs text-gray-400">Wins</div>
+                    </div>
+
+                    <div class="bg-black\20 rounded-lg p-3 text-center">
+                        <div class="flex justify-center items-center mb-1"> <i class="fas fa-bolt text-accent mr-1"></i>
+                            <span class="text-lg font-bold">0</span>
+                        </div>
+                        <div class="text-xs text-gray-400">Active</div>
+                    </div>
+
+                    <div class="bg-black\20 rounded-lg p-3 text-center">
+                        <div class="flex justify-center items-center mb-1"> <i
+                                class="fas fa-coins text-accent mr-1"></i> <span class="text-lg font-bold">0</span>
+                        </div>
+                        <div class="text-xs text-gray-400">FTN won</div>
+                    </div>
+
+                    <div class="bg-black\20 rounded-lg p-3 text-center">
+                        <div class="flex justify-center items-center mb-1"> <i
+                                class="fas fa-users text-accent mr-1"></i> <span class="text-lg font-bold">0</span>
+                        </div>
+                        <div class="text-xs text-gray-400">Friends</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-white/15 rounded-lg overflow-hidden p-0">
+                <div class="flex overflow-x-auto scrollbar-hide border-b border-white/10">
+                    <button id="tab-waiting" 
+                        class="prediction-tab px-4 py-3 text-sm font-medium text-accent border-b-2 border-accent whitespace-nowrap" 
+                        data-status="active">Waiting for results</button>
+                    <button id="tab-ended"
+                        class="prediction-tab px-4 py-3 text-sm font-medium text-gray-400 hover:text-white transition-colors whitespace-nowrap"
+                        data-status="completed">Ended</button>
+                    <button id="tab-created"
+                        class="prediction-tab px-4 py-3 text-sm font-medium text-gray-400 hover:text-white transition-colors whitespace-nowrap"
+                        data-status="created">Created</button>
+                    <button id="tab-all"
+                        class="prediction-tab px-4 py-3 text-sm font-medium text-gray-400 hover:text-white transition-colors whitespace-nowrap"
+                        data-status="all">All</button>
+                </div>
+
+                <div id="predictions-container" class="p-2 max-h-96 overflow-y-auto">
+                    <!-- Predictions will be loaded here -->
+                </div>
+                
+                <div id="empty-predictions" class="empty-state p-6 text-center"> 
+                    <i class="fas fa-inbox text-4xl text-gray-500 mb-3"></i>
+                    <div class="text-base font-medium mb-1">This list is empty</div>
+                    <div class="text-sm text-gray-400">Join predictions and follow the results here</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="bottom-nav-container max-w-md mx-auto flex justify-around"> <a href="events.html"
+                class="bottom-nav-item"> <i class="bottom-nav-icon far fa-comment-alt"></i> <span
+                    class="text-xs">Events</span> </a>
+            <a href="add.html" class="bottom-nav-item"> <i class="bottom-nav-icon fas fa-plus"></i> <span
+                    class="text-xs">Add</span> </a>
+            <a href="profile.html" class="bottom-nav-item bottom-nav-item-active"> <i
+                    class="bottom-nav-icon far fa-user"></i> <span class="text-xs">Profile</span> </a>
+        </div>
+    </nav>
+<!-- Web3Modal & WalletConnect integration -->
+<script src="https://cdn.jsdelivr.net/npm/web3@1.9.0/dist/web3.min.js"></script>
+<script src="https://unpkg.com/web3modal@1.9.12/dist/index.js"></script>
+<!-- Working Ethers.js CDN link -->
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js" type="application/javascript"></script>
+<!-- WalletConnect v1 for compatibility -->
+<script src="https://unpkg.com/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
+<!-- API Integration -->
+<script src="js/api.js"></script>
+<script>
+    let web3Modal, provider, web3;
+    
+    // Configure WalletConnect v1 provider options
+    const providerOptions = {
+        walletconnect: {
+            package: window.WalletConnectProvider.default,
+            options: {
+                infuraId: "bd949bc1becb403f2b64bf3dff3912ff", // Your Infura ID
+                rpc: {
+                    1: "https://mainnet.infura.io/v3/bd949bc1becb403f2b64bf3dff3912ff",
+                    5: "https://goerli.infura.io/v3/bd949bc1becb403f2b64bf3dff3912ff",
+                    137: "https://polygon-mainnet.infura.io/v3/bd949bc1becb403f2b64bf3dff3912ff",
+                    80001: "https://polygon-mumbai.infura.io/v3/bd949bc1becb403f2b64bf3dff3912ff"
+                }
+            }
+        }
+    };
+    // Initialize all page features
+    function initializeProfile() {
+        // Setup Web3Modal
+        web3Modal = new window.Web3Modal.default({
+            cacheProvider: false,
+            providerOptions,
+            theme: "dark"
+        });
+        
+        // Setup wallet connection
+        document.getElementById('connectWalletBtn').addEventListener('click', onConnectWallet);
+        
+        // Setup prediction tabs
+        setupPredictionTabs();
+        
+        // Setup other UI elements
+        setupNotifications();
+        setupProfileEdit();
+        
+        // If the user is already authenticated, load their data
+        if (PredictMeAPI.isAuthenticated()) {
+            // Get user data and update UI
+            const userData = PredictMeAPI.getCurrentUser();
+            if (userData) {
+                updateProfileUI(userData);
+                loadUserStats();
+            }
+            
+            // Update button state
+            document.getElementById('connectWalletBtn').innerText = 'Disconnect';
+            document.getElementById('connectWalletBtn').onclick = disconnectWallet;
+        }
+    }
+    
+    // Initialize when DOM is loaded
+    window.addEventListener('DOMContentLoaded', initializeProfile);
+    async function onConnectWallet() {
+        try {
+            // Show connecting state immediately
+            document.getElementById('connectWalletBtn').innerText = 'Connecting...';
+            
+            try {
+                // Connect to wallet using Web3Modal
+                provider = await web3Modal.connect();
+                
+                // Setup Web3 instance
+                web3 = new Web3(provider);
+                const accounts = await web3.eth.getAccounts();
+                const address = accounts[0];
+                
+                if (!address) {
+                    throw new Error('No accounts found. Please make sure your wallet is unlocked.');
+                }
+                
+                console.log('Connected to wallet:', address);
+                
+                // Show interim connected state
+                document.getElementById('walletAddress').innerText = address.slice(0, 6) + '...' + address.slice(-4);
+                document.getElementById('connectWalletBtn').innerText = 'Authenticating...';
+                
+                // Request nonce for authentication
+                const nonceResponse = await PredictMeAPI.requestNonce(address);
+                console.log('Nonce response:', nonceResponse);
+                
+                // Extract the nonce value from the response
+                let nonce;
+                if (nonceResponse.data && nonceResponse.data.nonce) {
+                    // Format: {data: {nonce: '...'}, message: 'Nonce created successfully'}
+                    nonce = nonceResponse.data.nonce;
+                } else if (nonceResponse.nonce) {
+                    // Simplified format: {nonce: '...'}
+                    nonce = nonceResponse.nonce;
+                } else {
+                    console.error('Unexpected nonce format:', nonceResponse);
+                    throw new Error('Invalid nonce response format from server');
+                }
+                
+                // Create the message to sign
+                const message = `Sign this message to authenticate with PredictMe: ${nonce}`;
+                console.log('Message to sign:', message);
+                
+                // Ask user to sign the message - using both ethers.js and web3.js for compatibility
+                let signature;
+                try {
+                    // First try ethers.js method which works better with some wallets
+                    const ethersProvider = new ethers.providers.Web3Provider(provider);
+                    const signer = ethersProvider.getSigner();
+                    signature = await signer.signMessage(message);
+                } catch (ethersError) {
+                    console.log('Ethers.js signing failed, trying Web3.js:', ethersError);
+                    // Fall back to web3.js method if ethers fails
+                    signature = await web3.eth.personal.sign(message, address, "");
+                }
+                
+                console.log('Signature created:', signature.substring(0, 20) + '...');
+                
+                // Verify signature with our backend
+                const authResponse = await PredictMeAPI.verifySignature(address, signature);
+                console.log('Auth response:', authResponse);
+                
+                // Authentication successful
+                document.getElementById('walletAddress').innerText = address.slice(0, 6) + '...' + address.slice(-4);
+                document.getElementById('connectWalletBtn').innerText = 'Disconnect';
+                document.getElementById('connectWalletBtn').onclick = disconnectWallet;
+                
+                // Load user data
+                loadUserStats();
+                loadUserPredictions();
+                
+                // Update UI with user data
+                if (authResponse && authResponse.user) {
+                    updateProfileUI(authResponse.user);
+                }
+                
+                // Listen for account changes
+                setupWalletListeners(provider);
+                
+                return true; // Connection successful
+            } catch (apiError) {
+                console.error('API authentication failed:', apiError);
+                alert('Authentication with server failed: ' + (apiError.message || 'Unknown error'));
+                await disconnectWallet();
+                return false;
+            }
+        } catch (e) {
+            console.error('Wallet connection error:', e);
+            document.getElementById('connectWalletBtn').innerText = 'Connect Wallet';
+            document.getElementById('walletAddress').innerText = 'Not connected';
+            alert('Wallet connection failed: ' + (e.message || 'Unknown error'));
+            return false;
+        }
+    }
+
+    async function disconnectWallet() {
+        try {
+            // Clear wallet connection
+            if (provider) {
+                if (provider.disconnect) {
+                    // WalletConnect needs explicit disconnect
+                    await provider.disconnect();
+                } else if (provider.close) {
+                    // Some providers use close instead
+                    await provider.close();
+                }
+            }
+            provider = null;
+            web3 = null;
+            
+            // Clear authentication
+            PredictMeAPI.logout();
+            
+            // Reset UI
+            document.getElementById('walletAddress').innerText = 'Not connected';
+            document.getElementById('connectWalletBtn').innerText = 'Connect Wallet';
+            document.getElementById('connectWalletBtn').onclick = onConnectWallet;
+            
+            // Reset profile UI
+            document.getElementById('userStats').innerHTML = `
+                <div class="flex justify-between mb-4">
+                    <div class="stat-item">
+                        <div class="stat-value">-</div>
+                        <div class="stat-label">Predictions</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">-</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">-</div>
+                        <div class="stat-label">Tokens</div>
+                    </div>
+                </div>
+            `;
+            
+            // Clear predictions
+            document.getElementById('predictionsContainer').innerHTML = `
+                <div class="text-center py-10">
+                    <p class="text-gray-400">Connect your wallet to view your predictions</p>
+                </div>
+            `;
+            
+            console.log('Wallet disconnected and authentication cleared');
+        } catch (error) {
+            console.error('Error during disconnect:', error);
+        }
+    }
+    
+    // Setup wallet event listeners
+    function setupWalletListeners(provider) {
+        if (!provider) return;
+        
+        // Remove any existing listeners first
+        try {
+            provider.removeAllListeners && provider.removeAllListeners();
+        } catch (e) {
+            console.warn('Could not remove existing listeners:', e);
+        }
+        
+        // Listen for account changes
+        if (provider.on) {
+            // Handle account changes
+            provider.on('accountsChanged', async (accounts) => {
+                console.log('accountsChanged event:', accounts);
+                if (accounts.length === 0) {
+                    // Disconnected
+                    console.log('Wallet disconnected (accountsChanged)');
+                    await disconnectWallet();
+                } else if (accounts[0] !== PredictMeAPI.getCurrentUser()?.wallet_address) {
+                    // Account changed, need to re-authenticate
+                    console.log('Account changed, re-authenticating...');
+                    await disconnectWallet();
+                    setTimeout(() => onConnectWallet(), 500);
+                }
+            });
+            
+            // Handle chain changes
+            provider.on('chainChanged', async (chainId) => {
+                console.log('chainChanged event:', chainId);
+                // Refresh the page when they change networks
+                window.location.reload();
+            });
+            
+            // Handle disconnection
+            provider.on('disconnect', async (error) => {
+                console.log('disconnect event:', error);
+                await disconnectWallet();
+            });
+        }
+    }
+    
+    // Function to update profile UI with user data
+    function updateProfileUI(userData) {
+        if (!userData) return;
+        const usernameElem = document.querySelector('.card .text-lg.font-bold');
+        if (usernameElem) {
+            usernameElem.innerText = userData.username ? `@${userData.username}` : '@User';
+        }
+        
+        // Update wallet address
+        const walletElem = document.querySelector('.card .text-sm.text-gray-400');
+        if (walletElem && userData.wallet_address) {
+            const shortAddress = userData.wallet_address.slice(0, 6) + '...' + userData.wallet_address.slice(-4);
+            walletElem.innerText = shortAddress;
+        }
+        
+        // Update token balance
+        const tokenBalanceElem = document.querySelector('.text-lg.font-bold');
+        if (tokenBalanceElem) {
+            tokenBalanceElem.innerText = userData.token_balance || '0';
+        }
+        
+        // Load user stats asynchronously
+        loadUserStats();
+    }
+    
+    // Reset profile UI to default state
+    function resetProfileUI() {
+        const usernameElem = document.querySelector('.card .text-lg.font-bold');
+        if (usernameElem) {
+            usernameElem.innerText = '@User';
+        }
+        
+        const walletElem = document.querySelector('.card .text-sm.text-gray-400');
+        if (walletElem) {
+            walletElem.innerText = 'UQDK...P8wE';
+        }
+        
+        const tokenBalanceElem = document.querySelector('.text-lg.font-bold');
+        if (tokenBalanceElem) {
+            tokenBalanceElem.innerText = '0';
+        }
+        
+        // Reset stats
+        document.querySelectorAll('.bg-black\\20 .text-lg.font-bold').forEach(elem => {
+            elem.innerText = '0';
+        });
+    }
+    
+    // Load user stats from API
+    async function loadUserStats() {
+        if (!PredictMeAPI.isAuthenticated()) return;
+        
+        try {
+            const profileData = await PredictMeAPI.getUserProfile();
+            if (!profileData || !profileData.stats) return;
+            
+            // Update stats on UI
+            const stats = profileData.stats;
+            const statsMap = {
+                'Predictions': stats.total_predictions || 0,
+                'Completed': stats.completed_predictions || 0,
+                'Wins': stats.wins || 0,
+                'Active': stats.active_predictions || 0,
+                'FTN won': stats.ftn_won || 0,
+                'Friends': stats.total_friends || 0
+            };
+            
+            // Find and update each stat in the UI
+            for (const [label, value] of Object.entries(statsMap)) {
+                const statContainer = Array.from(document.querySelectorAll('.bg-black\\20')).find(container => 
+                    container.querySelector('.text-xs.text-gray-400')?.innerText === label
+                );
+                
+                if (statContainer) {
+                    const valueElem = statContainer.querySelector('.text-lg.font-bold');
+                    if (valueElem) {
+                        valueElem.innerText = value;
+                    }
+                }
+            }
+            
+            // Also load predictions for this user
+            loadUserPredictions('active');
+            
+        } catch (error) {
+            console.error('Error loading user stats:', error);
+        }
+    }
+    
+    // Function to load user predictions based on status filter
+    async function loadUserPredictions(status = 'active') {
+        if (!PredictMeAPI.isAuthenticated()) {
+            document.getElementById('empty-predictions').style.display = 'block';
+            document.getElementById('predictions-container').innerHTML = '';
+            return;
+        }
+        
+        try {
+            // Get user ID
+            const userData = PredictMeAPI.getCurrentUser();
+            if (!userData || !userData.id) throw new Error('User not found');
+            
+            // Fetch predictions for this user
+            const predictions = await PredictMeAPI.getPredictions(userData.id);
+            const container = document.getElementById('predictions-container');
+            const emptyState = document.getElementById('empty-predictions');
+            
+            // Filter predictions based on status
+            let filteredPredictions = predictions;
+            if (status !== 'all') {
+                const now = new Date();
+                
+                if (status === 'active') {
+                    // Active predictions are those where the event hasn't ended yet
+                    filteredPredictions = predictions.filter(p => new Date(p.event_end_time) > now && !p.event_is_resolved);
+                } else if (status === 'completed') {
+                    // Completed predictions are those where the event has ended
+                    filteredPredictions = predictions.filter(p => new Date(p.event_end_time) <= now || p.event_is_resolved);
+                } else if (status === 'created') {
+                    // Predictions for events created by the user
+                    const events = await PredictMeAPI.getEvents();
+                    const userCreatedEventIds = events
+                        .filter(e => e.created_by === userData.id)
+                        .map(e => e.id);
+                    filteredPredictions = predictions.filter(p => userCreatedEventIds.includes(p.event_id));
+                }
+            }
+            
+            // Show empty state if no predictions
+            if (!filteredPredictions || filteredPredictions.length === 0) {
+                container.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            // Hide empty state and show predictions
+            emptyState.style.display = 'none';
+            
+            // Build prediction cards
+            let html = '';
+            for (const prediction of filteredPredictions) {
+                const event = prediction.event;
+                const isPending = new Date(event.end_time) > new Date() && !event.is_resolved;
+                
+                html += `
+                <div class="prediction-card bg-white/10 rounded-lg p-3 mb-3">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h4 class="text-md font-semibold">${event.title}</h4>
+                            <div class="text-xs text-gray-400">${PredictMeAPI.getRemainingTime(event.end_time)}</div>
+                        </div>
+                        <div class="bg-accent/20 text-accent text-xs py-1 px-2 rounded">${event.category || 'general'}</div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <div class="text-sm">Your prediction: <span class="font-medium">${prediction.option_id}</span></div>
+                            <div class="text-xs text-gray-400">Confidence: ${Math.round(prediction.confidence_score * 100)}%</div>
+                        </div>
+                        <a href="prediction-details.html?id=${event.id}" class="btn-sm btn-secondary">
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>`;
+            }
+            
+            container.innerHTML = html;
+            
+        } catch (error) {
+            console.error('Error loading user predictions:', error);
+            document.getElementById('empty-predictions').style.display = 'block';
+        }
+    }
+    
+    // Function to setup prediction tab switching
+    function setupPredictionTabs() {
+        const tabs = document.querySelectorAll('.prediction-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active state from all tabs
+                tabs.forEach(t => {
+                    t.classList.remove('text-accent', 'border-accent', 'border-b-2');
+                    t.classList.add('text-gray-400');
+                });
+                
+                // Add active state to clicked tab
+                tab.classList.remove('text-gray-400');
+                tab.classList.add('text-accent', 'border-accent', 'border-b-2');
+                
+                // Load predictions for the selected status
+                const status = tab.getAttribute('data-status');
+                loadUserPredictions(status);
+            });
+        });
+    }
+    
+    // Setup notification button
+    function setupNotifications() {
+        document.getElementById('notificationsBtn').addEventListener('click', () => {
+            // For now just show an alert, but this could be enhanced to show a dropdown
+            alert('Notifications feature coming soon!');
+        });
+    }
+    
+    // Setup profile edit button
+    function setupProfileEdit() {
+        document.getElementById('editProfileBtn').addEventListener('click', () => {
+            window.location.href = 'settings.html';
+        });
+    }
+</script>
+</body>
+
+</html>

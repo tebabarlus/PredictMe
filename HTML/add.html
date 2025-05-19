@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>Add Prediction</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        accent: '#d6f94a',
+                        'accent-dark': '#b7f34d',
+                        'accent-light': '#d9ff66',
+                        // Added telegram colors for consistency, though not used here
+                        'tg-bg': '#17212b',
+                        'tg-secondary-bg': '#232e3c',
+                        'tg-text': '#f5f5f5',
+                        'tg-hint': '#708499',
+                        'tg-link': '#6ab3f3',
+                        'tg-button': '#5288c1',
+                        'tg-destructive': '#ec3942'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="font-['Inter',sans-serif] m-0 p-0 text-white bg-gradient-to-b from-[#300c2b] to-black min-h-screen">
+    <div class="relative mb-4"> <img src="Predictmelogo.svg" alt="Predictme Logo" class="h-12" style="padding-top: 20px; margin: auto; "></div>
+    <div class="content-wrapper">
+        <div class="container max-w-md w-full mx-auto px-4">
+                <div class="card bg-white/15 rounded-lg p-4 w-full">
+                    <h2 class="text-xl font-bold mb-6 text-center text-white tracking-wide drop-shadow-lg">Create a
+                        Prediction</h2> <input id="prediction-title" name="title" type="text"
+                        placeholder="Prediction Question (e.g. Bitcoin to close at $96,000 or higher on May 1?)"
+                        class="form-input" required /> <textarea id="prediction-description" name="description"
+                        placeholder="Description / Rules (criteria, data sources...)" class="form-input" rows="3"
+                        required></textarea> 
+                <div class="mb-4">
+                    <label class="label">End date and time *</label>
+                    <input id="end-date" class="input" min="" type="datetime-local" placeholder="Select end date and time" required />
+                </div>
+                
+                <div class="mb-4">
+                    <label class="label">Category</label>
+                    <select id="prediction-category" class="input">
+                        <option value="general">General</option>
+                        <option value="crypto">Crypto</option>
+                        <option value="sports">Sports</option>
+                        <option value="politics">Politics</option>
+                        <option value="entertainment">Entertainment</option>
+                        <option value="tech">Technology</option>
+                    </select>
+                </div>    
+                    <div class="mb-4">
+                        <label class="form-label" for="image-upload">Upload Images</label> <label class="file-drop"> <i
+                                class="fas fa-cloud-upload-alt text-2xl text-blue-400 mb-2"></i>
+                            <span class="text-gray-400 mb-2">Drag & drop or click to select files</span> <input
+                                id="image-upload" name="image" type="file" multiple class="hidden" />
+                        </label>
+                        <div id="preview-container" class="preview-container gap-2 mt-2"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full py-3 px-4"> <i class="fas fa-bolt mr-2"></i>Post
+                        Prediction
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="bottom-nav-container max-w-md mx-auto flex justify-around"> <a href="events.html"
+                class="bottom-nav-item"> <i class="bottom-nav-icon far fa-comment-alt"></i> <span
+                    class="text-xs">Events</span> </a>
+            <a href="add.html" class="bottom-nav-item bottom-nav-item-active"> <i
+                    class="bottom-nav-icon fas fa-plus"></i> <span class="text-xs">Add</span> </a>
+            <a href="profile.html" class="bottom-nav-item"> <i class="bottom-nav-icon far fa-user"></i> <span
+                    class="text-xs">Profile</span> </a>
+        </div>
+    </nav>
+
+    <!-- API Integration -->
+    <script src="js/api.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // TEMPORARILY DISABLED FOR TESTING
+            // Check if user is authenticated
+            /*if (!PredictMeAPI.isAuthenticated()) {
+                // Redirect to events page if not authenticated
+                window.location.href = 'events.html';
+                return;
+            }*/
+            
+            // Setup form submission
+            setupForm();
+            
+            // Setup image upload
+            setupImageUpload();
+        });
+        
+        function setupForm() {
+            // Find form elements
+            const titleInput = document.getElementById('prediction-title');
+            const descriptionInput = document.getElementById('prediction-description');
+            const endDateInput = document.getElementById('end-date');
+            const submitButton = document.querySelector('button[type="submit"]');
+            
+            // Set minimum end date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const tomorrowStr = tomorrow.toISOString().slice(0, 16);
+            endDateInput.min = tomorrowStr;
+            
+            // Handle form submission
+            submitButton.addEventListener('click', async function(e) {
+                e.preventDefault();
+                
+                // Validate form
+                if (!titleInput.value.trim()) {
+                    alert('Please enter a prediction title');
+                    titleInput.focus();
+                    return;
+                }
+                
+                if (!endDateInput.value) {
+                    alert('Please select an end date');
+                    endDateInput.focus();
+                    return;
+                }
+                
+                // Show loading state
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i>Creating prediction...';
+                
+                try {
+                    // Get uploaded image URLs
+                    const imageUrls = Array.from(document.querySelectorAll('.preview-item'))
+                        .map(item => item.getAttribute('data-url'))
+                        .filter(url => url);
+                    
+                    // Get category value
+                    const categorySelect = document.getElementById('prediction-category');
+                    const selectedCategory = categorySelect ? categorySelect.value : 'general';
+                    
+                    // Create event data
+                    const eventData = {
+                        title: titleInput.value.trim(),
+                        description: descriptionInput.value.trim(),
+                        end_time: new Date(endDateInput.value).toISOString(),
+                        options: [
+                            { value: 'YES', label: 'Yes' },
+                            { value: 'NO', label: 'No' }
+                        ],
+                        image_url: imageUrls[0] || null,
+                        category: selectedCategory
+                    };
+                    
+                    console.log('Creating event with category:', selectedCategory);
+                    
+                    let result;
+                    try {
+                        // Check if we're in development mode
+                        if (PredictMeAPI.isDevelopment) {
+                            console.log('Development mode detected - using direct event creation...');
+                            // In development, try direct event creation first (avoids auth)
+                            try {
+                                result = await PredictMeAPI.createEventDirect(eventData);
+                                console.log('Direct event creation succeeded:', result);
+                            } catch (directError) {
+                                console.warn('Direct event creation failed:', directError.message);
+                                // Fall back to regular event creation
+                                result = await PredictMeAPI.createEvent(eventData);
+                            }
+                        } else {
+                            // In production, always use standard event creation (with auth)
+                            result = await PredictMeAPI.createEvent(eventData);
+                        }
+                    } catch (error) {
+                        console.error('All event creation methods failed:', error.message);
+                        throw error; // Re-throw to be caught by outer catch
+                    }
+                    
+                    // Show success message
+                    alert('Prediction created successfully!');
+                    
+                    // Redirect to the new prediction
+                    window.location.href = `prediction-details.html?id=${result.event ? result.event.id : result.id}`;
+                } catch (error) {
+                    console.error('Error creating prediction:', error);
+                    alert('Failed to create prediction. Please try again.');
+                    
+                    // Reset button
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = '<i class="fas fa-bolt mr-2"></i>Post Prediction';
+                }
+            });
+        }
+        
+        function setupImageUpload() {
+            const uploadInput = document.getElementById('image-upload');
+            const dropZone = document.querySelector('.file-drop');
+            const previewContainer = document.getElementById('preview-container');
+            
+            // Handle file selection
+            uploadInput.addEventListener('change', handleFileSelect);
+            
+            // Handle drag and drop
+            dropZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                dropZone.classList.add('bg-white/10');
+            });
+            
+            dropZone.addEventListener('dragleave', function() {
+                dropZone.classList.remove('bg-white/10');
+            });
+            
+            dropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                dropZone.classList.remove('bg-white/10');
+                
+                if (e.dataTransfer.files.length > 0) {
+                    handleFiles(e.dataTransfer.files);
+                }
+            });
+            
+            // Handle file selection
+            function handleFileSelect(e) {
+                const files = e.target.files;
+                if (files.length > 0) {
+                    handleFiles(files);
+                }
+            }
+            
+            // Process selected files
+            function handleFiles(files) {
+                // Convert FileList to Array and process up to 3 files
+                Array.from(files).slice(0, 3).forEach(file => {
+                    // Validate file type
+                    if (!file.type.match('image.*')) {
+                        alert('Please select only image files.');
+                        return;
+                    }
+                    
+                    // Create preview
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // Create preview item
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'preview-item relative w-20 h-20 rounded overflow-hidden';
+                        
+                        // Preview image
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'w-full h-full object-cover';
+                        previewItem.appendChild(img);
+                        
+                        // Loading overlay
+                        const loadingOverlay = document.createElement('div');
+                        loadingOverlay.className = 'absolute inset-0 bg-black/50 flex items-center justify-center';
+                        loadingOverlay.innerHTML = '<i class="fas fa-circle-notch fa-spin text-white"></i>';
+                        previewItem.appendChild(loadingOverlay);
+                        
+                        // Add to preview container
+                        previewContainer.appendChild(previewItem);
+                        
+                        // Upload file
+                        uploadFile(file, previewItem, loadingOverlay);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+            
+            // Upload file to server
+            async function uploadFile(file, previewItem, loadingOverlay) {
+                try {
+                    // Upload file to the server
+                    const result = await PredictMeAPI.uploadFile(file);
+                    
+                    // Store URL for form submission
+                    previewItem.setAttribute('data-url', result.file_url);
+                    
+                    // Remove loading overlay
+                    loadingOverlay.remove();
+                    
+                    // Add remove button
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'absolute top-0 right-0 bg-black/50 text-white w-6 h-6 flex items-center justify-center rounded-bl';
+                    removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    removeBtn.addEventListener('click', function() {
+                        previewItem.remove();
+                    });
+                    previewItem.appendChild(removeBtn);
+                } catch (error) {
+                    console.error('Upload failed:', error);
+                    
+                    // Show error state
+                    loadingOverlay.innerHTML = '<i class="fas fa-exclamation-triangle text-red-500"></i>';
+                    
+                    // Add retry button
+                    const retryBtn = document.createElement('button');
+                    retryBtn.className = 'absolute bottom-0 right-0 bg-black/50 text-white w-6 h-6 flex items-center justify-center rounded-tl';
+                    retryBtn.innerHTML = '<i class="fas fa-redo"></i>';
+                    retryBtn.addEventListener('click', function() {
+                        loadingOverlay.innerHTML = '<i class="fas fa-circle-notch fa-spin text-white"></i>';
+                        uploadFile(file, previewItem, loadingOverlay);
+                    });
+                    previewItem.appendChild(retryBtn);
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

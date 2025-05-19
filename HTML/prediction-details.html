@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport" />
+    <title>Predict</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        accent: '#d6f94a',
+                        'accent-dark': '#b7f34d',
+                        'accent-light': '#d9ff66',
+                        purple: '#6b21a8',
+                        blue: '#6b6bff',
+                        pink: '#f472b6',
+                        'tg-bg': '#17212b',
+                        'tg-secondary-bg': '#232e3c',
+                        'tg-text': '#f5f5f5',
+                        'tg-hint': '#708499',
+                        'tg-link': '#6ab3f3',
+                        'tg-button': '#5288c1',
+                        'tg-destructive': '#ec3942'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="font-['Inter',sans-serif] m-0 p-0 text-white bg-gradient-to-b from-[#300c2b] to-black min-h-screen">
+    <div class="relative mb-4"> <img src="Predictmelogo.svg" alt="Predictme Logo" class="h-12" style="padding-top: 20px; margin: auto; "></div>
+    <div class="content-wrapper">
+        <div class="flex items-center justify-between p-4 max-w-md mx-auto">
+            <a href="events.html" aria-label="Back"
+                class="w-10 h-10 flex items-center justify-center text-tg-text hover:text-accent transition-colors">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="flex space-x-4"> <button aria-label="Share"
+                    class="w-10 h-10 flex items-center justify-center text-tg-text hover:text-accent transition-colors">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+            </div>
+        </div>
+        <main class="flex-grow container max-w-md mx-auto px-4">
+            <section class="w-full mb-8" id="event-details-container">
+                <!-- Event details will be loaded dynamically here -->
+                <div class="text-center py-10">
+                    <i class="fas fa-circle-notch fa-spin text-2xl"></i>
+                    <p class="mt-3">Loading event details...</p>
+                </div>
+            </section>
+            <section class="w-full mb-8" id="voting-section">
+                <!-- Voting section will be populated dynamically -->
+                <div class="text-center py-6">
+                    <i class="fas fa-circle-notch fa-spin text-xl"></i>
+                    <p class="mt-2">Loading voting data...</p>
+                </div>
+            </section>
+            <section class="w-full mb-8" id="related-events-container">
+                <div class="px-4">
+                    <h2 class="text-lg font-bold mb-4">More Events</h2>
+                    <div class="space-y-3" id="related-events-list">
+                        <!-- Related events will be loaded dynamically -->
+                        <div class="text-center py-6">
+                            <i class="fas fa-circle-notch fa-spin text-xl"></i>
+                            <p class="mt-2 text-sm">Loading related events...</p>
+
+                        <div class="bg-white/15 rounded-lg p-3 flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-lg overflow-hidden mr-3 flex-shrink-0"> <img
+                                    alt="Peace symbol" class="w-full h-full object-cover"
+                                    src="https://placehold.co/256x256/png" />
+                            </div>
+                            <div class="flex-grow">
+                                <p class="font-medium mb-1 line-clamp-2"> Bitcoin to close at $96,000 or higher on May
+                                    1?
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center text-xs text-gray-400"> <i
+                                            class="fas fa-clock mr-1 text-xs"></i>
+                                        <span>9d left</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="px-2 py-0.5 rounded-full bg-accent/20 text-accent text-xs">100%
+                                        </div>
+                                        <div class="px-2 py-0.5 rounded-full bg-accent-dark/20 text-accent text-xs">0%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="w-full mb-20" id="predictions-section">
+                <div class="px-4">
+                    <h2 class="text-lg font-bold mb-4">Predictions</h2>
+                    <div id="predictions-container" class="bg-white/15 rounded-lg overflow-hidden">
+                        <!-- Predictions will be loaded dynamically -->
+                        <div class="text-center py-6">
+                            <i class="fas fa-circle-notch fa-spin text-xl"></i>
+                            <p class="mt-2 text-sm">Loading predictions...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <div class="prediction-actions-footer"> 
+            <button class="w-full bg-transparent border border-white/30 text-tg-text rounded-full py-2.5 flex items-center justify-center"
+                id="share-btn" type="button">
+                <i class="fas fa-share-alt mr-2"></i> <span>Share prediction</span>
+            </button>
+
+            <div class="button-group flex space-x-3">
+                <button class="flex-1 btn btn-destructive" id="vote-no-btn" type="button">No</button>
+                <button class="flex-1 btn btn-primary" id="vote-yes-btn" type="button">Yes</button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="bottom-nav-container max-w-md mx-auto flex justify-around"> <a href="events.html"
+                class="bottom-nav-item bottom-nav-item-active"> <i class="bottom-nav-icon far fa-comment-alt"></i> <span
+                    class="text-xs">Events</span> </a>
+            <a href="add.html" class="bottom-nav-item"> <i class="bottom-nav-icon fas fa-plus"></i> <span
+                    class="text-xs">Add</span> </a>
+            <a href="profile.html" class="bottom-nav-item"> <i class="bottom-nav-icon far fa-user"></i> <span
+                    class="text-xs">Profile</span> </a>
+        </div>
+    </nav>
+
+    <!-- API Integration -->
+    <script src="js/api.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Parse event ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const eventId = urlParams.get('id');
+            
+            if (!eventId) {
+                showError('No event ID provided');
+                return;
+            }
+            
+            // Load event details
+            loadEventDetails(eventId);
+            
+            // Load related events with the same category
+            loadRelatedEvents();
+        });
+        
+        async function loadEventDetails(eventId) {
+            try {
+                const eventDetailsContainer = document.getElementById('event-details-container');
+                const votingSection = document.getElementById('voting-section');
+                
+                // Fetch event details
+                const event = await PredictMeAPI.getEventById(eventId);
+                
+                if (!event) {
+                    showError('Event not found');
+                    return;
+                }
+                
+                // Format event details HTML
+                const eventHtml = createEventDetailsHtml(event);
+                eventDetailsContainer.innerHTML = eventHtml;
+                
+                // Load voting data
+                loadVotingData(event, votingSection);
+                
+                // Load predictions for this event
+                loadPredictions(eventId);
+                
+                // Set up event interactions (buttons, etc.)
+                setupEventInteractions(event);
+                
+                // Set up voting buttons
+                setupVotingButtons(event);
+                
+                // Update page title
+                document.title = `${event.title} | PredictMe`;
+                
+            } catch (error) {
+                console.error('Error loading event details:', error);
+                showError('Failed to load event details');
+            }
+        }
+        
+        function createEventDetailsHtml(event) {
+            // Format date and time displays
+            const timeRemaining = PredictMeAPI.getRemainingTime(event.end_time);
+            const endDate = new Date(event.end_time);
+            const formattedEndDate = endDate.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric' 
+            });
+            
+            // Default image if none provided
+            const imageUrl = event.image_url || 'https://placehold.co/800x400/gray/white?text=Event+Image';
+            
+            // Format category badges
+            const categoryBadge = event.category ? 
+                `<div class="text-xs px-2 py-0.5 rounded-full bg-accent/20 text-accent">#${event.category.charAt(0).toUpperCase() + event.category.slice(1)}</div>` : '';
+            
+            // Calculate progress percentages
+            const totalDuration = new Date(event.end_time) - new Date(event.created_at || Date.now());
+            const elapsed = Date.now() - new Date(event.created_at || Date.now());
+            const submissionProgressPercent = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
+            const predictionTimeLeftPercent = Math.max(0, 100 - submissionProgressPercent);
+            
+            // Build the HTML
+            return `
+                <div class="card bg-white/15 rounded-lg overflow-hidden mb-8 p-0">
+                    <div class="relative mb-4">
+                        <img alt="${event.title}" class="w-full h-48 object-cover" src="${imageUrl}" />
+                        <div class="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 text-white flex items-center">
+                            <span class="font-bold">${event.prediction_count || 0} predictions</span>
+                        </div>
+                    </div>
+
+                    <div class="px-4 pb-6">
+                        <div class="flex items-center mb-3">
+                            <div class="text-sm font-medium">@${event.creator || 'predict-admin'}</div>
+                            <div class="ml-auto flex space-x-1">
+                                ${categoryBadge}
+                            </div>
+                        </div>
+
+                        <h1 class="text-xl font-bold mb-3">${event.title}</h1>
+                        <div class="text-sm text-gray-400 mb-4 line-clamp-3">${event.description || 'No description provided.'}</div>
+
+                        <button class="btn btn-outline-accent flex items-center justify-center mx-auto mb-4"> <span>See
+                                more</span>
+                            <i class="fas fa-chevron-down ml-2"></i> </button>
+
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <p class="text-xs text-gray-400 mb-2">Submission progress</p>
+                                <div class="w-full h-1 bg-white/10 rounded-full mb-2">
+                                    <div class="h-full bg-accent-dark rounded-full" style="width: ${submissionProgressPercent}%"></div>
+                                </div>
+                                <p class="text-xl font-bold text-accent">${timeRemaining}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-400 mb-2">Prediction ends</p>
+                                <div class="w-full h-1 bg-white/10 rounded-full mb-2">
+                                    <div class="h-full bg-tg-text rounded-full" style="width: ${predictionTimeLeftPercent}%"></div>
+                                </div>
+                                <p class="text-xl font-bold">${formattedEndDate}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        async function loadRelatedEvents() {
+            try {
+                const relatedEventsContainer = document.getElementById('related-events-list');
+                
+                // Get current event category from URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const eventId = urlParams.get('id');
+                
+                if (!eventId) {
+                    relatedEventsContainer.innerHTML = '<div class="text-center py-4">Cannot load related events without an event ID</div>';
+                    return;
+                }
+                
+                // Fetch current event to get its category
+                const currentEvent = await PredictMeAPI.getEventById(eventId);
+                
+                if (!currentEvent || !currentEvent.category) {
+                    // Fetch some general events if we can't determine the category
+                    const events = await PredictMeAPI.getEvents();
+                    displayRelatedEvents(events.filter(e => e.id !== eventId).slice(0, 3), relatedEventsContainer);
+                    return;
+                }
+                
+                // Fetch events from the same category
+                const events = await PredictMeAPI.getEvents(currentEvent.category);
+                
+                // Filter out the current event and limit to 3
+                const relatedEvents = events.filter(e => e.id !== eventId).slice(0, 3);
+                
+                displayRelatedEvents(relatedEvents, relatedEventsContainer);
+                
+            } catch (error) {
+                console.error('Error loading related events:', error);
+                document.getElementById('related-events-list').innerHTML = 
+                    '<div class="text-center py-4">Failed to load related events</div>';
+            }
+        }
+        
+        function displayRelatedEvents(events, container) {
+            if (!events || events.length === 0) {
+                container.innerHTML = '<div class="text-center py-4">No related events found</div>';
+                return;
+            }
+            
+            let html = '';
+            
+            events.forEach(event => {
+                const timeRemaining = PredictMeAPI.getRemainingTime(event.end_time);
+                const imageUrl = event.image_url || 'https://placehold.co/256x256/png';
+                
+                html += `
+                    <div class="bg-white/15 rounded-lg p-3 flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-lg overflow-hidden mr-3 flex-shrink-0">
+                            <img alt="${event.title}" class="w-full h-full object-cover" src="${imageUrl}" />
+                        </div>
+                        <div class="flex-grow">
+                            <a href="prediction-details.html?id=${event.id}" class="block">
+                                <p class="font-medium mb-1 line-clamp-2">${event.title}</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center text-xs text-gray-400">
+                                        <i class="fas fa-clock mr-1 text-xs"></i>
+                                        <span>${timeRemaining}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function loadVotingData(event, container) {
+            try {
+                // Default options to Yes/No if not provided
+                const options = event.options || [
+                    { value: 'YES', label: 'Yes' }, 
+                    { value: 'NO', label: 'No' }
+                ];
+                
+                // Calculate percentages for the voting options
+                // In a real app, this would come from the API
+                const option1Percent = Math.min(100, Math.max(0, Math.round(Math.random() * 100)));
+                const option2Percent = 100 - option1Percent;
+                
+                // Format participant count
+                const participantCount = event.prediction_count || Math.floor(Math.random() * 500);
+                
+                // Format created date
+                const createdDate = event.created_at ? new Date(event.created_at) : new Date();
+                const formattedCreatedDate = createdDate.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric'
+                });
+                
+                // HTML for voting section
+                const html = `
+                    <div class="card-p6 bg-white/15 rounded-lg p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full flex items-center justify-center bg-tg-destructive text-white font-bold text-xs mr-2">
+                                    1
+                                </div> 
+                                <span class="text-xl font-bold">${option1Percent}%</span>
+                            </div>
+                            <div class="text-lg font-medium text-gray-400">VS</div>
+                            <div class="flex items-center">
+                                <span class="text-xl font-bold">${option2Percent}%</span>
+                                <div class="w-6 h-6 rounded-full flex items-center justify-center bg-accent-dark text-white font-bold text-xs ml-2">
+                                    2
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full h-2 rounded-full overflow-hidden mb-6 flex">
+                            <div class="h-full bg-tg-destructive" style="width: ${option1Percent}%"></div>
+                            <div class="h-full bg-accent-dark" style="width: ${option2Percent}%"></div>
+                        </div>
+
+                        <div class="relative mb-2"> 
+                            <input type="text" placeholder="Enter your prediction amount" id="prediction-amount"
+                                class="form-input-dark rounded-md px-4 py-2 text-sm" style="margin-bottom: 0;" /> 
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-400">
+                            <div>${participantCount} Participants</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 px-4">
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div class="flex items-center">
+                                <i class="fas fa-user text-gray-400 mr-2"></i> 
+                                <span class="text-gray-400">Total Predictors:</span> 
+                                <span class="ml-auto font-bold">${participantCount}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-chart-bar text-gray-400 mr-2"></i> 
+                                <span class="text-gray-400">Volume:</span> 
+                                <span class="ml-auto font-bold">${(participantCount * 0.5).toFixed(2)} FTN</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-clock text-gray-400 mr-2"></i> 
+                                <span class="text-gray-400">Last prediction:</span> 
+                                <span class="ml-auto font-bold">3h ago</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-calendar-alt text-gray-400 mr-2"></i> 
+                                <span class="text-gray-400">Created:</span> 
+                                <span class="ml-auto font-bold">${formattedCreatedDate}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading voting data:', error);
+                container.innerHTML = `
+                    <div class="text-center py-6">
+                        <i class="fas fa-exclamation-circle text-xl text-red-500"></i>
+                        <p class="mt-2 text-sm">Failed to load voting data</p>
+                    </div>
+                `;
+            }
+        }
+        
+        async function loadPredictions(eventId) {
+            try {
+                const container = document.getElementById('predictions-container');
+                
+                // Show loading state
+                container.innerHTML = `
+                    <div class="text-center py-6">
+                        <i class="fas fa-circle-notch fa-spin text-xl"></i>
+                        <p class="mt-2 text-sm">Loading predictions...</p>
+                    </div>
+                `;
+                
+                // Fetch predictions for this event from API
+                const predictions = await PredictMeAPI.getPredictions(null, eventId);
+                
+                if (!predictions || predictions.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-6">
+                            <i class="fas fa-info-circle text-xl"></i>
+                            <p class="mt-2 text-sm">No predictions yet. Be the first!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Generate HTML for each prediction
+                let html = '';
+                predictions.forEach((prediction, index) => {
+                    const predictionTime = new Date(prediction.created_at || Date.now());
+                    const timeAgo = getTimeAgo(predictionTime);
+                    
+                    html += `
+                        ${index > 0 ? '<div class="border-t border-white/15"></div>' : ''}
+                        <div class="flex items-center justify-between p-3 ${index > 0 ? '' : 'border-b border-white/15'}">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-full overflow-hidden mr-2"> 
+                                    <img alt="User avatar" class="w-full h-full object-cover" src="https://placehold.co/256x256/png" />
+                                </div>
+                                <span class="text-sm">@${prediction.user_id || 'anonymous'}</span>
+                            </div>
+                            <span class="text-xs text-gray-400">${timeAgo}</span>
+                            <div class="flex items-center">
+                                <div class="px-2 py-1 rounded-full bg-accent-dark/20 text-accent text-xs font-medium">
+                                    +${(prediction.amount || Math.random() * 10).toFixed(2)} FTN
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3">
+                            <div class="flex justify-between">
+                                <div class="flex">
+                                    <div class="w-6 h-6 rounded-full flex items-center justify-center 
+                                        ${prediction.option === 'NO' ? 'bg-tg-destructive' : 'bg-accent-dark'} 
+                                        text-white font-bold text-xs mr-2">
+                                        ${prediction.option === 'NO' ? '1' : '2'}
+                                    </div>
+                                    <div class="text-sm font-medium">${prediction.option || 'YES'}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading predictions:', error);
+                document.getElementById('predictions-container').innerHTML = `
+                    <div class="text-center py-6">
+                        <i class="fas fa-exclamation-circle text-xl text-red-500"></i>
+                        <p class="mt-2 text-sm">Failed to load predictions</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            let interval = Math.floor(seconds / 31536000);
+            if (interval > 1) return interval + ' years ago';
+            if (interval === 1) return '1 year ago';
+            
+            interval = Math.floor(seconds / 2592000);
+            if (interval > 1) return interval + ' months ago';
+            if (interval === 1) return '1 month ago';
+            
+            interval = Math.floor(seconds / 86400);
+            if (interval > 1) return interval + ' days ago';
+            if (interval === 1) return '1 day ago';
+            
+            interval = Math.floor(seconds / 3600);
+            if (interval > 1) return interval + ' hours ago';
+            if (interval === 1) return '1 hour ago';
+            
+            interval = Math.floor(seconds / 60);
+            if (interval > 1) return interval + ' minutes ago';
+            if (interval === 1) return '1 minute ago';
+            
+            return Math.floor(seconds) + ' seconds ago';
+        }
+        
+        function setupVotingButtons(event) {
+            const yesButton = document.getElementById('vote-yes-btn');
+            const noButton = document.getElementById('vote-no-btn');
+            const shareButton = document.getElementById('share-btn');
+            
+            if (yesButton && noButton) {
+                // Handle Yes vote
+                yesButton.addEventListener('click', function() {
+                    submitPrediction(event, 'YES');
+                });
+                
+                // Handle No vote
+                noButton.addEventListener('click', function() {
+                    submitPrediction(event, 'NO');
+                });
+            }
+            
+            // Handle share button
+            if (shareButton) {
+                shareButton.addEventListener('click', function() {
+                    const url = window.location.href;
+                    
+                    // Try to use the modern navigator.share API if available
+                    if (navigator.share) {
+                        navigator.share({
+                            title: event.title,
+                            text: 'Check out this prediction: ' + event.title,
+                            url: url
+                        })
+                        .catch(err => {
+                            console.error('Share failed:', err);
+                            // Fallback to copying to clipboard
+                            copyToClipboard(url);
+                        });
+                    } else {
+                        // Fallback for browsers that don't support sharing
+                        copyToClipboard(url);
+                    }
+                });
+            }
+        }
+        
+        function copyToClipboard(text) {
+            // Create a temporary input element
+            const input = document.createElement('input');
+            input.style.position = 'fixed';
+            input.style.opacity = 0;
+            input.value = text;
+            document.body.appendChild(input);
+            
+            // Select and copy the text
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            
+            // Show feedback to user
+            alert('Link copied to clipboard! Share it with friends.');
+        }
+        
+        async function submitPrediction(event, option) {
+            try {
+                if (!PredictMeAPI.isAuthenticated()) {
+                    alert('Please connect your wallet first to place a prediction');
+                    window.location.href = 'profile.html';
+                    return;
+                }
+                
+                const amountInput = document.getElementById('prediction-amount');
+                const amount = parseFloat(amountInput.value);
+                
+                if (isNaN(amount) || amount <= 0) {
+                    alert('Please enter a valid amount');
+                    return;
+                }
+                
+                // Create prediction data
+                const predictionData = {
+                    event_id: event.id,
+                    option: option,
+                    amount: amount
+                };
+                
+                // Submit prediction to API
+                await PredictMeAPI.createPrediction(predictionData);
+                
+                // Show success message
+                alert('Your prediction has been submitted!');
+                
+                // Reload predictions
+                loadPredictions(event.id);
+                
+                // Clear input field
+                amountInput.value = '';
+                
+            } catch (error) {
+                console.error('Error submitting prediction:', error);
+                alert('Failed to submit prediction. Please try again.');
+            }
+        }
+        
+        function setupEventInteractions(event) {
+            // Set up interactive elements after event is loaded
+            // For example: voting buttons, expand/collapse description, etc.
+            
+            // Example: Description expand/collapse
+            const seeMoreBtn = document.querySelector('.btn-outline-accent');
+            if (seeMoreBtn) {
+                const description = document.querySelector('.text-gray-400.mb-4');
+                seeMoreBtn.addEventListener('click', function() {
+                    if (description.classList.contains('line-clamp-3')) {
+                        description.classList.remove('line-clamp-3');
+                        seeMoreBtn.innerHTML = '<span>Show less</span><i class="fas fa-chevron-up ml-2"></i>';
+                    } else {
+                        description.classList.add('line-clamp-3');
+                        seeMoreBtn.innerHTML = '<span>See more</span><i class="fas fa-chevron-down ml-2"></i>';
+                    }
+                });
+            }
+        }
+        
+        function showError(message) {
+            document.getElementById('event-details-container').innerHTML = `
+                <div class="text-center py-10">
+                    <i class="fas fa-exclamation-circle text-2xl mb-3 text-red-500"></i>
+                    <p>${message}</p>
+                    <a href="events.html" class="mt-4 inline-block text-blue-400 hover:underline">
+                        <i class="fas fa-arrow-left mr-1"></i> Back to Events
+                    </a>
+                </div>
+            `;
+        }
+    </script>
+</body>
+
+</html>

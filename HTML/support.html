@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport" />
+    <title>Predict - Support</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        accent: '#d6f94a',
+                        'accent-dark': '#b7f34d',
+                        'accent-light': '#d9ff66',
+                        purple: '#6b21a8',
+                        blue: '#6b6bff',
+                        pink: '#f472b6',
+                        'tg-bg': '#17212b',
+                        'tg-secondary-bg': '#232e3c',
+                        'tg-text': '#f5f5f5',
+                        'tg-hint': '#708499',
+                        'tg-link': '#6ab3f3',
+                        'tg-button': '#5288c1',
+                        'tg-destructive': '#ec3942'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="font-['Inter',sans-serif] m-0 p-0 text-white bg-gradient-to-b from-[#300c2b] to-black min-h-screen">
+    <div class="relative mb-4"> <img src="Predictmelogo.svg" alt="Predictme Logo" class="h-12"
+            style="padding-top: 20px; margin: auto; "></div>
+    <div class="content-wrapper">
+        <div class="flex items-center justify-between p-4 max-w-md mx-auto"> <a href="profile.html" aria-label="Back"
+                class="w-10 h-10 flex items-center justify-center text-white hover:text-accent transition-colors">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1 class="text-xl font-bold">Resources</h1>
+            <div class="w-10 h-10"></div>
+        </div>
+
+        <main class="flex-grow container max-w-md mx-auto px-4 flex flex-col gap-4 pb-20">
+            <div class="space-y-4"> <a href="" class="block">
+                    <div class="card bg-white/15 rounded-lg p-4 flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-info text-accent text-xl"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-lg font-medium mb-1">How Predict works</h3>
+                            <p class="text-sm text-gray-400">Predict is the first on-chain prediction marketplace</p>
+                        </div>
+                        <div class="flex items-center text-gray-400"> <i class="fas fa-chevron-right text-xs"></i> </div>
+                    </div>
+                </a>
+
+                <div class="card bg-white/15 rounded-lg p-4 flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-wallet text-accent text-xl"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <h3 class="text-lg font-medium mb-1">How to connect wallet</h3>
+                        <p class="text-sm text-gray-400">To start using Predict, you'll need a wallet – here's how to
+                            set it up.</p>
+                    </div>
+                    <div class="flex items-center text-gray-400"> <i class="fas fa-chevron-right text-xs"></i> </div>
+                </div>
+
+                <a href="" class="block">
+                    <div class="card bg-white/15 rounded-lg p-4 flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-headset text-accent text-xl"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-lg font-medium mb-1">Contact support</h3>
+                            <p class="text-sm text-gray-400">Get in touch. Questions, issues, or feedback? Always happy
+                                to help.</p>
+                        </div>
+                        <div class="flex items-center text-gray-400"> <i class="fas fa-chevron-right text-xs"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <div class="card bg-white/15 rounded-lg p-4 flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-question text-accent text-xl"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <h3 class="text-lg font-medium mb-1">Frequently Asked Questions</h3>
+                        <p class="text-sm text-gray-400">Find answers to common questions about predictions and rewards
+                        </p>
+                    </div>
+                    <div class="flex items-center text-gray-400"> <i class="fas fa-chevron-right text-xs"></i> </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="bottom-nav-container max-w-md mx-auto flex justify-around"> <a href="events.html"
+                class="bottom-nav-item"> <i class="bottom-nav-icon far fa-comment-alt"></i> <span
+                    class="text-xs">Events</span> </a>
+            <a href="add.html" class="bottom-nav-item"> <i class="bottom-nav-icon fas fa-plus"></i> <span
+                    class="text-xs">Add</span> </a>
+            <a href="profile.html" class="bottom-nav-item bottom-nav-item-active"> <i
+                    class="bottom-nav-icon far fa-user"></i> <span class="text-xs">Profile</span> </a>
+        </div>
+    </nav>
+</body>
+
+</html>
